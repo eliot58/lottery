@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=400">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        a {
+            color: #D3D3D3;
+        }
+    </style>
+    <title>Buy</title>
+</head>
+<body>
+    <div class="container" style="height: 100%;">
+        <div class="d-flex flex-column justify-content-between" style="height: 100%; padding: 40px 0px;">
+            <div class="d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <img src="{% static 'img/logo.png' %}" width="100" height="100" alt="">
+                    <div class="d-flex flex-column align-items-end">
+                        <h1 style="font-size: 30px; font-weight: 700;">SRP LOTTERY</h1>
+                        <div class="d-flex">
+                            <a href="" style="font-size: 20px;">My tickets</a>
+                            <a href="" style="font-size: 20px; margin-left: 20px;">Store</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; line-height: 24px; font-size: 18px;">
+                    Мы не нашли у вас ни одной нашей НФТ. <br> <br> Предлагаем начать искать секретную фразу, которая откроет доступ к кошельку с призом.
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 120px; ">
+                🚀
+            </div>
+            <form method="post" action="{% url 'mint' %}" class="d-flex flex-column nft_form">
+                <div style="margin: 0 auto; font-size: 30px; font-weight: 700;">1 ticket = 0.5 ТОН</div>
+                <div style="margin: 10px auto; font-size: 18px;">{{words_quantity}} из 13824</div>
+                <div class="d-flex justify-content-between" style="margin: 0 auto;">
+                    <span onclick="minus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">-</span>
+                    <input style="background-color: #D3D3D3; width: 100px; text-align: center; color: #323232; margin: 0px 30px;" value="1" type="text">
+                    <span onclick="plus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">+</span>
+                </div>
+                <div class="result_sum" style="margin: 0 auto; font-weight: 700; font-size: 28px; margin-bottom: 20px;">ИТОГО: <span>0,5</span> ТОН</div>
+                <a href="#" onclick="sendTx()" style="text-align: center;">
+                    <img style="width: 80%;" src="{% static 'img/mint.svg' %}" alt="">
+                </a>
+                <a class="tonkeeper" href="https://app.tonkeeper.com" target="_blank" style="display: none;"></a>
+            </from>
+            
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <script>
+
+        function minus(element){
+			i = element.nextElementSibling;
+			if (i.value != 1){
+				i.value = Number(i.value) - 1
+			}
+            document.querySelector(".result_sum span").textContent = Number(i.value) * 0.5
+		}
+		
+		function plus(element){
+			i = element.previousElementSibling;
+			i.value = Number(i.value) + 1
+            document.querySelector(".result_sum span").textContent = Number(i.value) * 0.5
+    	}
+        
+        const connector = new TonConnectSDK.TonConnect({manifestUrl: "https://lemarchand.web3citizen.website/uploads/metadata/ton-connect.json"});
+
+        connector.restoreConnection();
+
+        async function sendTx() {
+            document.querySelector(".tonkeeper").click()
+            if (!connector.connected) {
+                alert('Please connect wallet to send the transaction!');
+            }
+
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 60,
+                messages: [
+                    {
+                        address: "UQBQMnbLeZPWxWWIMWSvT2imuWcJFiXe1emPwJVgCK93k6Di",
+                        amount: "20000000"
+                    }
+                ]
+            }
+
+            try {
+                const result = await connector.sendTransaction(transaction);
+                console.log(result)
+                const someTxData = await myAppExplorerService.getTransaction(result.boc);
+                alert('Transaction was sent successfully', someTxData);
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
+
+
+        const unsubscribe = connector.onStatusChange(
+            walletInfo => {
+                console.log(walletInfo)
+            } 
+        );
+
+        
+
+
+    </script>
+</body>
+</html>
