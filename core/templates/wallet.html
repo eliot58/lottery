@@ -11,6 +11,7 @@
             color: #D3D3D3;
         }
     </style>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <title>Wallet</title>
 </head>
 <body>
@@ -22,8 +23,8 @@
                     <div class="d-flex flex-column align-items-end">
                         <h1 style="font-size: 30px; font-weight: 700;">SRP LOTTERY</h1>
                         <div class="d-flex">
-                            <a href="" style="font-size: 20px;">My tickets</a>
-                            <a href="" style="font-size: 20px; margin-left: 20px;">Store</a>
+                            <a href="{% url 'tickets' %}" style="font-size: 20px;">My tickets</a>
+                            <a href="{% url 'mint' %}" style="font-size: 20px; margin-left: 20px;">Store</a>
                         </div>
                     </div>
                 </div>
@@ -45,31 +46,30 @@
                     </table>
                 </div>
             </div>
-            <a href="#" class="continue" style="text-align: center;">
+            <a href="#" class="continue" id="connect" style="text-align: center;">
                 <img style="width: 80%;" src="{% static 'img/continue.svg' %}" alt="">
             </a>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script>
-        
-        const connector = new TonConnectSDK.TonConnect({manifestUrl: "https://lemarchand.web3citizen.website/uploads/metadata/ton-connect.json"});
-        const walletConnectionSource = {
-            universalLink: 'https://app.tonkeeper.com/ton-connect',
-            bridgeUrl: 'https://bridge.tonapi.io/bridge'
-        }
 
-        window.addEventListener("DOMContentLoaded", function(){
-            const universalLink = connector.connect(walletConnectionSource);
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://lemarchand.web3citizen.website/uploads/metadata/ton-connect.json',
+            language: 'ru',
+            restoreConnection: true
+        });
 
-            document.querySelector(".continue").href = universalLink
-            console.log(universalLink)
+        const connect = document.querySelector("#connect")
+
+        connect.addEventListener("click", async function(){
+            await tonConnectUI.openModal();
         })
 
         function getNFTItems(address) {
             var xhr = new XMLHttpRequest();
-            var url = `https://testnet.tonapi.io/v2/accounts/${address}/nfts?collection=EQChoISqlSuHcbydwfQsviYolxLOfMzC9P6xhre6l7JS2G4S&limit=1000&offset=0&indirect_ownership=false`;
+            var url = `https://testnet.tonapi.io/v2/accounts/${address}/nfts?collection=EQC6Ru_nF4l0WJTeIKdB7qQTb2WaEMqos8tQFnl3btfqO4aO&limit=1000&offset=0&indirect_ownership=false`;
 
             xhr.open('GET', url);
 
@@ -92,9 +92,9 @@
 
 
 
-        const unsubscribe = connector.onStatusChange(
-            walletInfo => {
-                getNFTItems(walletInfo.account.address)
+        const unsubscribe = tonConnectUI.onStatusChange(
+            walletAndwalletInfo => {
+                getNFTItems(walletAndwalletInfo.account.address)
             } 
         );
 

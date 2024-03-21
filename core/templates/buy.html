@@ -11,6 +11,7 @@
             color: #D3D3D3;
         }
     </style>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <title>Buy</title>
 </head>
 <body>
@@ -22,8 +23,8 @@
                     <div class="d-flex flex-column align-items-end">
                         <h1 style="font-size: 30px; font-weight: 700;">SRP LOTTERY</h1>
                         <div class="d-flex">
-                            <a href="" style="font-size: 20px;">My tickets</a>
-                            <a href="" style="font-size: 20px; margin-left: 20px;">Store</a>
+                            <a href="{% url 'tickets' %}" style="font-size: 20px;">My tickets</a>
+                            <a href="{% url 'mint' %}" style="font-size: 20px; margin-left: 20px;">Store</a>
                         </div>
                     </div>
                 </div>
@@ -37,22 +38,23 @@
             <form method="post" action="{% url 'mint' %}" class="d-flex flex-column nft_form">
                 <div style="margin: 0 auto; font-size: 30px; font-weight: 700;">1 ticket = 0.5 ТОН</div>
                 <div style="margin: 10px auto; font-size: 18px;">{{words_quantity}} из 13824</div>
-                <div class="d-flex justify-content-between" style="margin: 0 auto;">
+                <form method="post" action="{% url 'mint' %}" class="d-flex justify-content-between" style="margin: 0 auto;">
+                    {% csrf_token %}
                     <span onclick="minus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">-</span>
-                    <input style="background-color: #D3D3D3; width: 100px; text-align: center; color: #323232; margin: 0px 30px;" value="1" type="text">
+                    <input name="quantity" style="background-color: #D3D3D3; width: 100px; text-align: center; color: #323232; margin: 0px 30px;" value="1" type="text">
                     <span onclick="plus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">+</span>
-                </div>
+                    <input type="text" name="address" hidden>
+                </form>
                 <div class="result_sum" style="margin: 0 auto; font-weight: 700; font-size: 28px; margin-bottom: 20px;">ИТОГО: <span>0,5</span> ТОН</div>
-                <a href="#" onclick="sendTx()" style="text-align: center;">
-                    <img style="width: 80%;" src="{% static 'img/mint.svg' %}" alt="">
-                </a>
+                <button type="button" onclick="sendTx()" style="margin: 0 auto; width: 80%; background-color: inherit; border: none;">
+                    <img style="width: 100%;" src="{% static 'img/mint.svg' %}" alt="">
+                </button>
                 <a class="tonkeeper" href="https://app.tonkeeper.com" target="_blank" style="display: none;"></a>
             </from>
             
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
     <script>
 
         function minus(element){
@@ -69,43 +71,39 @@
             document.querySelector(".result_sum span").textContent = Number(i.value) * 0.5
     	}
         
-        const connector = new TonConnectSDK.TonConnect({manifestUrl: "https://lemarchand.web3citizen.website/uploads/metadata/ton-connect.json"});
-
-        connector.restoreConnection();
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://lemarchand.web3citizen.website/uploads/metadata/ton-connect.json',
+            language: 'ru',
+            restoreConnection: true
+        });
 
         async function sendTx() {
-            document.querySelector(".tonkeeper").click()
-            if (!connector.connected) {
-                alert('Please connect wallet to send the transaction!');
-            }
-
             const transaction = {
                 validUntil: Math.floor(Date.now() / 1000) + 60,
                 messages: [
                     {
-                        address: "UQBQMnbLeZPWxWWIMWSvT2imuWcJFiXe1emPwJVgCK93k6Di",
-                        amount: "20000000"
+                        address: "EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA",
+                        amount: (50000000 * Number(document.querySelector("input[name='quantity']").value)).toString()
                     }
                 ]
             }
 
             try {
-                const result = await connector.sendTransaction(transaction);
-                console.log(result)
-                const someTxData = await myAppExplorerService.getTransaction(result.boc);
-                alert('Transaction was sent successfully', someTxData);
+                const result = await tonConnectUI.sendTransaction(transaction, {
+                    modals: ['before', 'success', 'error'],
+                    notifications: ['before', 'success', 'error']
+                });
+
+                document.querySelector("form").submit()
+                
             } catch (e) {
-                console.log(e)
+                console.error(e);
             }
         }
 
-
-
-        const unsubscribe = connector.onStatusChange(
-            walletInfo => {
-                console.log(walletInfo)
-            } 
-        );
+        function setAddress(address) {
+            document.querySelector("input[name='address']").value = address
+        }
 
         
 
