@@ -29,8 +29,6 @@ def mint(request):
 
         deploy.delay(tasks)
         
-        
-
         return redirect(tickets)
             
 
