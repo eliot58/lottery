@@ -6,8 +6,8 @@ from tonsdk.contract.wallet import Wallets, WalletVersionEnum
 import requests
 from pathlib import Path
 from pytonlib import TonlibClient
-from django.conf import settings
 from celery import shared_task
+import os
 
 
 async def get_client():
@@ -57,7 +57,7 @@ def create_nft_mint_body(address, content, index):
 
 async def deploy_item(address, content, index):
 
-    _, pub_k, priv_k, wallet = Wallets.from_mnemonics(mnemonics=settings.mnemonics, version=WalletVersionEnum.v4r2,
+    _, pub_k, priv_k, wallet = Wallets.from_mnemonics(mnemonics=os.getenv('mnemonics').split(), version=WalletVersionEnum.v4r2,
                                                           workchain=0)
     
     client = await get_client()
@@ -78,6 +78,6 @@ async def deploy_item(address, content, index):
 
 
 @shared_task(bind=True)
-def call(self, items):
+def deploy(self, items):
     for item in items:
         asyncio.get_event_loop().run_until_complete(deploy_item(item["address"], item["content"], item["index"]))

@@ -1,7 +1,7 @@
 import os
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'logist.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lottery.settings')
 
 
 app = Celery('mint')

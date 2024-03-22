@@ -54,3 +54,14 @@ tr td:last-child {
 .table_container::-webkit-scrollbar {
 	display: none;
 }
+
+.wave-ticket {
+	background: url('img/ticket.png') 0 0/100% 100% no-repeat;
+	width: 80%;
+	padding: 15px 0px;
+	margin: 0 auto;
+	text-decoration: none;
+	text-align: center;
+	font-size: 18px;
+	color: #323232;
+}

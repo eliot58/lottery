@@ -38,13 +38,13 @@
             <form method="post" action="{% url 'mint' %}" class="d-flex flex-column nft_form">
                 <div style="margin: 0 auto; font-size: 30px; font-weight: 700;">1 ticket = 0.5 ТОН</div>
                 <div style="margin: 10px auto; font-size: 18px;">{{words_quantity}} из 13824</div>
-                <form method="post" action="{% url 'mint' %}" class="d-flex justify-content-between" style="margin: 0 auto;">
+                <div class="d-flex justify-content-between" style="margin: 0 auto;">
                     {% csrf_token %}
                     <span onclick="minus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">-</span>
                     <input name="quantity" style="background-color: #D3D3D3; width: 100px; text-align: center; color: #323232; margin: 0px 30px;" value="1" type="text">
                     <span onclick="plus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">+</span>
                     <input type="text" name="address" hidden>
-                </form>
+                </div>
                 <div class="result_sum" style="margin: 0 auto; font-weight: 700; font-size: 28px; margin-bottom: 20px;">ИТОГО: <span>0,5</span> ТОН</div>
                 <button type="button" onclick="sendTx()" style="margin: 0 auto; width: 80%; background-color: inherit; border: none;">
                     <img style="width: 100%;" src="{% static 'img/mint.svg' %}" alt="">
@@ -82,7 +82,7 @@
                 validUntil: Math.floor(Date.now() / 1000) + 60,
                 messages: [
                     {
-                        address: "EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA",
+                        address: "0QBQMnbLeZPWxWWIMWSvT2imuWcJFiXe1emPwJVgCK93kxto",
                         amount: (50000000 * Number(document.querySelector("input[name='quantity']").value)).toString()
                     }
                 ]
@@ -104,6 +104,12 @@
         function setAddress(address) {
             document.querySelector("input[name='address']").value = address
         }
+
+        const unsubscribe = tonConnectUI.onStatusChange(
+            walletAndwalletInfo => {
+                setAddress(walletAndwalletInfo.account.address)
+            } 
+        );
 
         
 
