@@ -46,7 +46,7 @@ tr td:last-child {
 
 
 .table_container {
-	height: 200px;
+	height: 250px;
 	overflow-y: auto;
 	margin: 20px auto;
 }
