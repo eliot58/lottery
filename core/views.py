@@ -127,4 +127,4 @@ def tickets(request):
     return render(request, "tickets.html")
 
 def info(request):
-    return render(request, "info.html")
+    return render(request, "info.html", {"wallets": Wallet.objects.all().order_by("id")})
