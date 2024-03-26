@@ -56,7 +56,9 @@
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script>
 
-        (window).Telegram?.WebApp.expand();
+        let tg = window.Telegram.WebApp;
+
+        tg.expand();
         document.addEventListener("touchmove", function (event) {
             event.preventDefault();
         },
