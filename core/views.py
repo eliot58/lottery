@@ -125,3 +125,6 @@ def mint(request):
 
 def tickets(request):
     return render(request, "tickets.html")
+
+def info(request):
+    return render(request, "info.html")
