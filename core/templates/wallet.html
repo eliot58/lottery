@@ -59,12 +59,12 @@
         let tg = window.Telegram.WebApp;
 
         tg.expand();
-        document.addEventListener("touchmove", function (event) {
-            event.preventDefault();
-        },
-        {
-            passive: false
-        });
+        // document.addEventListener("touchmove", function (event) {
+        //     event.preventDefault();
+        // },
+        // {
+        //     passive: false
+        // });
 
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://srplottery.online/static/tonconnect.json',
