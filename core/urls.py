@@ -6,4 +6,5 @@ urlpatterns = [
     path('mint/', mint, name='mint'),
     path('tickets/', tickets, name='tickets'),
     path('info/', info, name='info'),
+    path('tables/', tables, name='tables'),
 ]

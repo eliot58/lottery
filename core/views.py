@@ -68,7 +68,7 @@ async def deploy_batch(recieps):
 
 
 def index(request):
-    return render(request, "wallet.html", {"wallets": Wallet.objects.all().order_by("id")})
+    return render(request, "wallet.html")
 
 
 def mint(request):
@@ -128,3 +128,7 @@ def tickets(request):
 
 def info(request):
     return render(request, "info.html", {"wallets": Wallet.objects.all().order_by("id")})
+
+def tables(request):
+    wallets = Wallet.objects.all().order_by("id")
+    return render(request, "tables.html", {"first_part": wallets[:12], "second_part": wallets[12::]})

@@ -29,27 +29,22 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin-top: 20px; line-height: 24px; font-size: 18px;">
-                    We invite you to take part in the first season of an exciting game, which consists of searching for the secret phrase for restoring a wallet containing a certain amount of $TON. The conditions are as follows: The prize fund is 2500 $TON, distributed among wallets as follows:
-                </div>
-                <div class="table_container">
-                    <table>
-                        <tr>
-                            <th style="border-right: 1px solid #D3D3D3; border-bottom: 1px solid #D3D3D3;">Wallet number</th>
-                            <th style="border-bottom: 1px solid #D3D3D3;">$TON quantity</th>
-                        </tr>
-                        {% for wallet in wallets %}
-                        <tr>
-                            <td>{{wallet.id}}</td>
-                            <td>{{wallet.prize}}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
+                <div style="margin: 20px; line-height: 24px; font-size: 14px;">
+                    We invite you to take part in the first season of an exciting game, which consists of searching for the secret phrase for restoring a wallet containing a certain amount of $TON. <br>
+                    The conditions are as follows: <br>
+                    The prize fund is 2500 $TON. <br>
+                    <a href="{% url 'tables' %}">Balance distribution table.</a> <br>
+                    Each phrase is duplicated 24 times. <br>
+                    Each word of the secret phrase is hidden in NFT tickets. <br>
+                    You can see the phrase only when you collect all the words. <br>
+                    You can check the distribution of the found secret words in your collection on the corresponding page, available after connecting your wallet. <br>
+                    After purchasing a basic set of NFT tickets, or more to increase your chances of winning, you need to decide which phrases you will continue searching for and which tickets you need to sell on the secondary market. <br>
+                    There is a 10% royalty on the secondary market. 50% of the royalty goes into the prize game fund, which will be drawn after the last secret phrase is found. <br>
+                    ❗️ Follow the messages in the bot. <br>
+                    To avoid unfair play, tickets are distributed in waves after a certain number of tickets have been sold: <br>
+                    <a href="{% url 'tables' %}">Wave distribution table.</a> <br>
                 </div>
             </div>
-            <!-- <a href="#" class="continue" id="connect" style="text-align: center; margin-bottom: 40px;">
-                <img style="width: 80%;" src="{% static 'img/continue.svg' %}" alt="">
-            </a> -->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

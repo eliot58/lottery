@@ -48,6 +48,38 @@
         {
             passive: false
         });
+
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://srplottery.online/static/tonconnect.json',
+            language: 'ru',
+            restoreConnection: false
+        });
+
+
+        function getNFTItems(address) {
+            var xhr = new XMLHttpRequest();
+            var url = `https://testnet.tonapi.io/v2/accounts/${address}/nfts?collection=EQAldhsjAGXKhPEJPZzgyMVKcp2rEIoOt9CCClNeoDdDbvCH&limit=1000&offset=0&indirect_ownership=false`;
+
+            xhr.open('GET', url);
+
+            xhr.responseType= 'json';
+
+            xhr.onreadystatechange = function () {
+                if (xhr.status == 200) {
+                    
+                }
+            };
+
+            xhr.send();
+        }
+
+
+
+        const unsubscribe = tonConnectUI.onStatusChange(
+            walletAndwalletInfo => {
+                getNFTItems(walletAndwalletInfo.account.address)
+            } 
+        );
     </script>
 </body>
 </html>
