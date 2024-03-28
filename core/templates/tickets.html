@@ -16,7 +16,7 @@
 <body>
     <div class="container" style="height: 100%;">
         <div class="d-flex flex-column justify-content-between" style="height: 100%; padding: 40px 0px;">
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column" style="padding-bottom: 40px;">
                 <div class="d-flex justify-content-between" style="margin-bottom: 40px;">
                     <img src="{% static 'img/logo.png' %}" width="100" height="100" alt="">
                     <div class="d-flex flex-column align-items-end">
@@ -28,16 +28,25 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin: 0 auto; font-size: 24px; font-weight: 700;">Tickets</div>
-                {% for wallet in wallets %}
-                <div class="d-flex flex-wrap justify-content-between" style="width: 100%; background-color: #FF7F7F; min-width: 360px; padding: 5px;">
-                    <a href="" class="wave-ticket" style="max-width: 12.88%; max-height: 30px; margin: 5px 0px; font-size: 14px; display: block; padding: 5px 0px;">1</a>
+                <div id="popup" class="popup item-popup">
+                    <div class="popup-content d-flex flex-column">
+                        <img style="width: 100%;" src="https://ipfs.io/ipfs/QmfH18WREYt2KcoaFvHdLCVQJwVQ12EeirDyGRfqauQwtF/srp_s1_19.png" alt="">
+                        <div class="is_copy" style="color: #323232; text-align: center; margin: 10px 0px; display: none;">This is a duplicate ticket. There's no need to keep it here. Sell it on GetGems and buy a new one.</div>
+                    </div>
                 </div>
-                {% endfor %}
+                <div style="margin: 0 auto; font-size: 24px; font-weight: 700;" class="tick-head">Tickets</div>
             </div>
         </div>
+
+    </div>
+    <div id="template" style="display: none;">
+        <div class="d-flex flex-wrap justify-content-between wallets-div" style="width: 100%; background-color: #FF7F7F; min-width: 360px; padding: 5px; margin: 10px 0px;">
+        </div>
+        <a href="#" class="wave-ticket wallets-word" style="max-width: 14.88%; max-height: 30px; margin: 5px 0px; font-size: 14px; display: block; padding: 5px 0px;">1</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         let tg = window.Telegram.WebApp;
 
@@ -52,25 +61,69 @@
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://srplottery.online/static/tonconnect.json',
             language: 'ru',
-            restoreConnection: false
+            restoreConnection: true
         });
+
+        window.addEventListener('click', function (event) {
+			let popups = document.querySelectorAll('#popup');
+			for (let popup of popups) {
+				if (event.target == popup) {
+					popup.style.display = 'none';
+				}
+			}
+
+		});
+
+        const colors = ['#FF7F7F', '#FF997F', '#FFB57F', '#FFD47F', '#FFEF7F', '#F0FF7F', '#C4FF7F', '#B0FF7F', '#7FFFA6', '#7FFFCE', '#7FFFF1', '#7FFAFF', '#7FE3FF', '#7FC8FF', '#7FA9FF', '#7F8BFF', '#B07FFF', '#CD7FFF', '#F07FFF', '#FF7FFF', '#FF7FEB', '#FF7FD0', '#FF7FB3', '#FF7F96']
 
 
         function getNFTItems(address) {
-            var xhr = new XMLHttpRequest();
-            var url = `https://testnet.tonapi.io/v2/accounts/${address}/nfts?collection=EQAldhsjAGXKhPEJPZzgyMVKcp2rEIoOt9CCClNeoDdDbvCH&limit=1000&offset=0&indirect_ownership=false`;
+            if (!tonConnectUI.connected) {
+                window.location.pathname = "/"
+            }
+            const target_element = document.querySelector('.tick-head')
+            const walletsDiv = document.querySelector('#template .wallets-div')
+            const walletsWord = document.querySelector('#template .wallets-word')
+            if (!tonConnectUI.connected) {
+                window.location.pathname = "/";
+                return;
+            }
+			let xhr = new XMLHttpRequest();
+			xhr.open('POST', `/getWallets/${address}/`);
+			xhr.responseType = 'json';
+			xhr.onload = function () {
+				if (xhr.status == 200) {
+                    for (let i = 0; xhr.response["data"].length; i++) {
+                        let cloneDiv = walletsDiv.cloneNode(true)
+                        cloneDiv.style.backgroundColor = colors[i]
+                        for (const word of xhr.response["data"][i]) {
+                            let cloneWord = walletsWord.cloneNode(true)
+                            cloneWord.textContent = word["quantity"]
+                            cloneWord.addEventListener("click", function(){
+                                if (word["quantity"] == 0) {
+                                    return;
+                                }
+                                const popup = document.querySelector(".item-popup")
+                                popup.querySelector("img").src = word["content"]
 
-            xhr.open('GET', url);
+                                if (word["quantity"] > 1) {
+                                    popup.querySelector(".is_copy").style.display = 'block'
+                                } else {
+                                    popup.querySelector(".is_copy").style.display = 'none'
+                                }
+                                popup.style.display = "block"
+                            })
+                            cloneDiv.appendChild(cloneWord)
+                        }
+                        target_element.insertAdjacentElement("afterend", cloneDiv)
 
-            xhr.responseType= 'json';
+                    }
+				}
+			};
+			xhr.send();
 
-            xhr.onreadystatechange = function () {
-                if (xhr.status == 200) {
-                    
-                }
-            };
 
-            xhr.send();
+
         }
 
 

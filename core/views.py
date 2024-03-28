@@ -1,3 +1,4 @@
+import json
 import os
 from django.shortcuts import render, redirect
 from .models import Wallet, Word
@@ -10,6 +11,8 @@ from tonsdk.contract.wallet import Wallets, WalletVersionEnum
 import requests
 from pathlib import Path
 from pytonlib import TonlibClient
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 datas = ['https://gateway.irys.xyz/nG8TR8NKBZ0Cqj1BQ16zY0EXar58VbZr-DV_28-0vzI', 'https://gateway.irys.xyz/GMezoftxgRuyPc4wKlos9V0pseP4LeDNHDqgPnM7fHs', 'https://gateway.irys.xyz/QjAVeDozR5ONOSzbR-Q_Oajb1f__Qj6cv9GUILOTRqo', 'https://gateway.irys.xyz/aRU1b8_lgf5BkCFDnxnEWmS3uRxkcQ6uIgizrAn8dIs', 'https://gateway.irys.xyz/mzvC9BMbjN4CK7niJohdGWJBAkQuIMH6OyHtFkWkdAY', 'https://gateway.irys.xyz/VCwX34pI4_1d3Ma32n7rVsmQs_REWKAsl1zSydo7a_I', 'https://gateway.irys.xyz/kdENR7zOMX6bdpHkWdkBep5rEsWgL7iNjNaZGCyeBsk', 'https://gateway.irys.xyz/kwiOxmojdmtPbyTasHLmU-mFZL4Up65kzR5hCGTBsQI', 'https://gateway.irys.xyz/RkTXtsK8A3MStPgcV1Pz2ziAWP5xInjgN8x4cYiJIJM', 'https://gateway.irys.xyz/xaCPdPBDLATirfAUvFTEWqBt8Oqih2EJLRdMg_TgRSA', 'https://gateway.irys.xyz/DkmiB4SYHU__MIqnPJUIsuvL_IIip8o5v3P4_Nr13Pw', 'https://gateway.irys.xyz/YAAFnkCDB3Jh3T3NQT_H89wxi3ETkgsGdQUX_ZdrgZk', 'https://gateway.irys.xyz/YhmkOc4bz86EFJ4D1QaMresQHYQ5Xs_-A5ZPYFkP5lo', 'https://gateway.irys.xyz/a6U8JZYATlZrkmkCS_kehTr2fDe2NX0jbJMoizDZI7s', 'https://gateway.irys.xyz/KML2EPZJfbscMrpj8sL74b36JTmgpj3jgIiN_wGWxYo', 'https://gateway.irys.xyz/ICTHwS2VxzNxFDE05xShRkC6cFc__to_pfUJyv0vUHE', 'https://gateway.irys.xyz/OocPeaylPnRoHb4Ku_Ly7fGkMqXBKudei2ZIPt8nK0g', 'https://gateway.irys.xyz/zVR-wvHeZkuyYQnsx_G6ynrQgU8eexlFeSXytM_gmYU', 'https://gateway.irys.xyz/qolJg5sc3ME_7_oMi8YVo1FwxZKbwoBjT2Bv44cHTq8', 'https://gateway.irys.xyz/e60W0Tf1surpexb8H3qJBJQiqNEBZLlBsimAb-z8vX4', 'https://gateway.irys.xyz/bPafwuEp02l3IpXpfmJYu_0IOuGnRrKowIQ-9POl0Ic', 'https://gateway.irys.xyz/26Fq42PkzJXQ0EjsJNP24VXynOUEYsG4dQfVfy2gQZ4', 'https://gateway.irys.xyz/Ng4RMl5qNtPA8PsSH9ZPA6q9_XWQE68BsyZVkfSXN18', 'https://gateway.irys.xyz/O27v5Kam3WB8wRJEZl6JCRHkkXk1YeNMvnTPc9eIbpo']
 
@@ -30,13 +33,13 @@ async def get_client():
 
 def create_collection():
     royalty_base = 1000
-    royalty_factor = 50
+    royalty_factor = 100
 
     collection = NFTCollection(royalty_base=royalty_base,
                                royalty=royalty_factor,
-                               royalty_address=Address('0QCHkhroiGSoQIdAtp353vn9gy6ol5507F2Rdf-qYaoa9sm5'),
-                               owner_address=Address('0QCHkhroiGSoQIdAtp353vn9gy6ol5507F2Rdf-qYaoa9sm5'),
-                               collection_content_uri='https://node1.irys.xyz/EEDnSsi9iLRlhuEx4BbuQsi6jR357Ug3eniXSAuZG30',
+                               royalty_address=Address('UQBCQtmkNaML8-evs-fSxgUebKPSNyfn2JFkHEeeIXwCf8wB'),
+                               owner_address=Address('UQBCQtmkNaML8-evs-fSxgUebKPSNyfn2JFkHEeeIXwCf8wB'),
+                               collection_content_uri='https://node1.irys.xyz/',
                                nft_item_content_base_uri='https://node1.irys.xyz/',
                                nft_item_code_hex=NFTItem.code)
 
@@ -52,7 +55,7 @@ def create_batch_nft_mint_body(contents, from_item_index):
 
 
 async def deploy_batch(recieps):
-    mnemonics = "middle chronic beef journey nominee narrow outdoor urban dad chase prison movie option tone evil project real hazard dinner begin error dune depart grace".split()
+    mnemonics = "slide wedding direct cycle rich whisper flush detect demand pottery gloom assault clever special fever fit wisdom cart ribbon local celery exile alcohol walnut".split()
 
     mnemonics, pub_k, priv_k, wallet = Wallets.from_mnemonics(mnemonics=mnemonics, version=WalletVersionEnum('hv2'),
                                                           workchain=0)
@@ -103,9 +106,9 @@ def mint(request):
             body = create_batch_nft_mint_body(content, index)
 
             recieps.append({
-                'address': "kQAldhsjAGXKhPEJPZzgyMVKcp2rEIoOt9CCClNeoDdDbksN",
+                'address': "EQDnZeFWdKkjRZZkbHnVisVzhmws15dbLGCqocEf8DwxiDWN",
                 'payload': body,
-                'amount': to_nano('0.05', 'ton'),
+                'amount': to_nano('0.1', 'ton'),
                 'send_mode': 3
             })
             index += 4
@@ -132,3 +135,32 @@ def info(request):
 def tables(request):
     wallets = Wallet.objects.all().order_by("id")
     return render(request, "tables.html", {"first_part": wallets[:12], "second_part": wallets[12::]})
+
+@csrf_exempt
+def getWallets(_, address):
+    r = requests.get(f"https://testnet.tonapi.io/v2/accounts/{address}/nfts?collection=EQDnZeFWdKkjRZZkbHnVisVzhmws15dbLGCqocEf8DwxiDWN&limit=1000&offset=0&indirect_ownership=false")
+    results = []
+
+    for wallet in Wallet.objects.all().order_by("id"):
+        d = {}
+        for wallet in wallet.word_set.values_list("name", flat = True).distinct():
+            d[wallet] = {"quantity": 0, "content": ""}
+        results.append(d)
+
+    nfts = json.loads(r.text)["nft_items"]
+
+    for nft in nfts:
+        word = Word.objects.get(index = nft["index"])
+        results[word.wallet_id - 1][word.name]["quantity"] += 1
+        results[word.wallet_id - 1][word.name]["content"] = nft["metadata"]["content_url"]
+
+    new_result = []
+
+    for result in results:
+        a = []
+        for _, value in result.items():
+            a.append(value)
+
+        new_result.append(a)
+    
+    return JsonResponse({"data": new_result})

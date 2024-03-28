@@ -22,7 +22,7 @@
                     <img src="{% static 'img/logo.png' %}" width="100" height="100" alt="">
                     <div class="d-flex flex-column align-items-end">
                         <h1 style="font-size: 36px; font-weight: 700;">SRP LOTTERY</h1>
-                        <div class="d-flex">
+                        <div class="d-flex navbar">
                             <a href="{% url 'tickets' %}">My tickets</a>
                             <a href="{% url 'mint' %}" style="margin-left: 20px;">Store</a>
                             <a href="{% url 'info' %}" style="margin-left: 20px;">Info</a>
@@ -61,7 +61,7 @@
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://srplottery.online/static/tonconnect.json',
             language: 'ru',
-            restoreConnection: false
+            restoreConnection: true
         });
 
         const connect = document.querySelector("#connect")
@@ -70,34 +70,33 @@
             await tonConnectUI.openModal();
         })
 
-        function getNFTItems(address) {
-            var xhr = new XMLHttpRequest();
-            var url = `https://testnet.tonapi.io/v2/accounts/${address}/nfts?collection=EQAldhsjAGXKhPEJPZzgyMVKcp2rEIoOt9CCClNeoDdDbvCH&limit=1000&offset=0&indirect_ownership=false`;
+        if (!tonConnectUI.connected) {
+            for (const nav of document.querySelectorAll(".navbar a")){
+                nav.style.display = "none"
+            }
+        } else {
+            document.querySelector(".continue").style.display = "none"
+        }
 
-            xhr.open('GET', url);
-
-            xhr.responseType= 'json';
-
-            xhr.onreadystatechange = function () {
-                if (xhr.status == 200) {
-                    if (xhr.response["nft_items"].length == 0) {
-                        window.location.pathname = "/mint/"
-                    }
-                    else {
-                        window.location.pathname = `/tickets/`
-                        
-                    }
+        function statusChange() {
+            if (!tonConnectUI.connected) {
+                for (const nav of document.querySelectorAll(".navbar a")){
+                    nav.style.display = "none"
                 }
-            };
-
-            xhr.send();
+                document.querySelector(".continue").style.display = "block"
+            } else {
+                for (const nav of document.querySelectorAll(".navbar a")){
+                    nav.style.display = "block"
+                }
+                document.querySelector(".continue").style.display = "none"
+            }
         }
 
 
 
         const unsubscribe = tonConnectUI.onStatusChange(
             walletAndwalletInfo => {
-                getNFTItems(walletAndwalletInfo.account.address)
+                statusChange()
             } 
         );
 
