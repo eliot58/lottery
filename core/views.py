@@ -75,11 +75,13 @@ def index(request):
 
 def mint(request):
     if request.method == "POST":
-        words = Word.objects.filter(index = None) & Word.objects.filter(stage = 1)
-        if len(words) == 0:
-            words = Word.objects.filter(index = None) & Word.objects.filter(stage = 2)
-        if len(words) == 0:
-            words = Word.objects.filter(index = None) & Word.objects.filter(stage = 3)
+        # words = Word.objects.filter(index = None) & Word.objects.filter(stage = 1)
+        # if len(words) == 0:
+        #     words = Word.objects.filter(index = None) & Word.objects.filter(stage = 2)
+        # if len(words) == 0:
+        #     words = Word.objects.filter(index = None) & Word.objects.filter(stage = 3)
+
+        words = Word.objects.filter(index = None)
 
         contents = []
         index = 13824 - len(Word.objects.filter(index = None))
