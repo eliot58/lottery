@@ -1,5 +1,4 @@
 import json
-import os
 from django.shortcuts import render, redirect
 from .models import Wallet, Word
 from random import randint
@@ -37,8 +36,8 @@ def create_collection():
 
     collection = NFTCollection(royalty_base=royalty_base,
                                royalty=royalty_factor,
-                               royalty_address=Address('UQBCQtmkNaML8-evs-fSxgUebKPSNyfn2JFkHEeeIXwCf8wB'),
-                               owner_address=Address('UQBCQtmkNaML8-evs-fSxgUebKPSNyfn2JFkHEeeIXwCf8wB'),
+                               royalty_address=Address('UQDV-ogHM7uqUmSEDl8lSQyq7CX_jkI14rV04sPjydBajAHq'),
+                               owner_address=Address('UQDV-ogHM7uqUmSEDl8lSQyq7CX_jkI14rV04sPjydBajAHq'),
                                collection_content_uri='https://node1.irys.xyz/',
                                nft_item_content_base_uri='https://node1.irys.xyz/',
                                nft_item_code_hex=NFTItem.code)
@@ -55,7 +54,7 @@ def create_batch_nft_mint_body(contents, from_item_index):
 
 
 async def deploy_batch(recieps):
-    mnemonics = "slide wedding direct cycle rich whisper flush detect demand pottery gloom assault clever special fever fit wisdom cart ribbon local celery exile alcohol walnut".split()
+    mnemonics = "vanish blur damp cave repeat affair total jazz review voyage pen must enlist estate enforce keen clock become orphan teach spike tank endorse spin".split()
 
     mnemonics, pub_k, priv_k, wallet = Wallets.from_mnemonics(mnemonics=mnemonics, version=WalletVersionEnum('hv2'),
                                                           workchain=0)
@@ -106,7 +105,7 @@ def mint(request):
             body = create_batch_nft_mint_body(content, index)
 
             recieps.append({
-                'address': "EQDnZeFWdKkjRZZkbHnVisVzhmws15dbLGCqocEf8DwxiDWN",
+                'address': "EQBxz61JNGiQMvhOjskf88N6ryXQ4yFW18BzkBCDWQHp5i_2",
                 'payload': body,
                 'amount': to_nano('0.1', 'ton'),
                 'send_mode': 3
