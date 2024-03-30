@@ -137,7 +137,7 @@ def tables(request):
 
 @csrf_exempt
 def getWallets(_, address):
-    r = requests.get(f"https://testnet.tonapi.io/v2/accounts/{address}/nfts?collection=EQDnZeFWdKkjRZZkbHnVisVzhmws15dbLGCqocEf8DwxiDWN&limit=1000&offset=0&indirect_ownership=false")
+    r = requests.get(f"https://testnet.tonapi.io/v2/accounts/{address}/nfts?collection=kQBxz61JNGiQMvhOjskf88N6ryXQ4yFW18BzkBCDWQHp5pR8&limit=1000&offset=0&indirect_ownership=false")
     results = []
 
     for wallet in Wallet.objects.all().order_by("id"):
