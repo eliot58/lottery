@@ -31,8 +31,8 @@
                 <div id="popup" class="popup item-popup">
                     <div class="popup-content d-flex flex-column">
                         <img style="width: 100%;" src="https://ipfs.io/ipfs/QmfH18WREYt2KcoaFvHdLCVQJwVQ12EeirDyGRfqauQwtF/srp_s1_19.png" alt="">
-                        <div class="is_copy" style="text-align: center;">
-                            <div style="color: #323232; margin: 10px 0px;">This is a duplicate ticket. There's no need to keep it here. Sell it on GetGems and buy a new one.</div>
+                        <div class="is_copy" style="color: #323232; margin: 10px 0px; text-align: center;">This is a duplicate ticket. There's no need to keep it here. Sell it on GetGems and buy a new one.</div>
+                        <div style="text-align: center; margin: 10px;">
                             <img style="width: 80%;" src="{% static 'img/sell.svg' %}" alt="">
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                                 }
                                 let cloneWord = walletsWord.cloneNode(true)
                                 cloneWord.textContent = word["quantity"]
-                                cloneWord.addEventListener("click", function(){
+                                cloneWord.addEventListener("click", function(event){
                                     if (word["quantity"] == 0) {
                                         return;
                                     }
@@ -130,6 +130,7 @@
                                     } else {
                                         popup.querySelector(".is_copy").style.display = 'none'
                                     }
+                                    event.preventDefault();
                                     popup.style.display = "block"
                                 })
                                 cloneDiv.appendChild(cloneWord)

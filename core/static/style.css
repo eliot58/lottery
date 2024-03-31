@@ -7,6 +7,10 @@ body {
 	font-size: 16px;
 }
 
+.navbar a {
+	display: none;
+}
+
 .popup {
 	display: none;
 	position: fixed;

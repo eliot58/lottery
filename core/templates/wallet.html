@@ -45,7 +45,7 @@
                     <a href="{% url 'tables' %}">Wave distribution table.</a> <br>
                 </div>
             </div>
-            <div style="text-align: center;">
+            <div style="text-align: center; display: none;" class="inner-connect">
                 <img style="width: 80%; cursor: pointer;" class="connect" src="{% static 'img/continue.svg' %}" alt="">
             </div>
             <div class="inner-disconnect" style="text-align: center; display: none;">
@@ -91,19 +91,38 @@
                 for (const nav of document.querySelectorAll(".navbar a")){
                     nav.style.display = "none"
                 }
-                document.querySelector(".continue").style.display = "block"
+                document.querySelector(".inner-connect").style.display = "block"
                 document.querySelector(".inner-disconnect").style.display = "none"
             } else {
                 for (const nav of document.querySelectorAll(".navbar a")){
                     nav.style.display = "block"
                 }
-                document.querySelector(".continue").style.display = "none"
+                document.querySelector(".inner-connect").style.display = "none"
                 let str = new Address(address).toString(true, true, true)
                 let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
                 document.querySelector("#address").textContent = result
                 document.querySelector(".inner-disconnect").style.display = "block"
             }
         }
+
+        tonConnectUI.connectionRestored.then(restored => {
+            if (restored) {
+                for (const nav of document.querySelectorAll(".navbar a")){
+                    nav.style.display = "block"
+                }
+                document.querySelector(".inner-connect").style.display = "none"
+                let str = new Address(tonConnectUI.walletInfo.account.address).toString(true, true, true)
+                let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
+                document.querySelector("#address").textContent = result
+                document.querySelector(".inner-disconnect").style.display = "block"
+            } else {
+                for (const nav of document.querySelectorAll(".navbar a")){
+                    nav.style.display = "none"
+                }
+                document.querySelector(".inner-connect").style.display = "block"
+                document.querySelector(".inner-disconnect").style.display = "none"
+            }
+        });
 
 
 
