@@ -50,7 +50,7 @@
             </div>
             <div class="inner-disconnect" style="text-align: center; display: none;">
                 <div style="font-size: 18px;">Now connected:</div>
-                <div class="address" id="address" style="font-size: 20px; margin-bottom: 10px;"></div>
+                <div class="balance" style="font-size: 20px; margin-bottom: 10px;"></div>
                 <img class="disconnect" style="width: 80%; cursor: pointer;" src="{% static 'img/disconnect.svg' %}" alt="">
             </div>
         </div>
@@ -86,7 +86,7 @@
             await tonConnectUI.disconnect();
         })
 
-        function statusChange(address) {
+        async function statusChange(address) {
             if (!tonConnectUI.connected) {
                 for (const nav of document.querySelectorAll(".navbar a")){
                     nav.style.display = "none"
@@ -98,22 +98,20 @@
                     nav.style.display = "block"
                 }
                 document.querySelector(".inner-connect").style.display = "none"
-                let str = new Address(address).toString(true, true, true, true)
-                let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
-                document.querySelector("#address").textContent = result
+                let result = "Your balance: " + (await tonweb.getBalance(address) / 1000000000).toFixed(2)  + "TON"
+                document.querySelector(".balance").textContent = result
                 document.querySelector(".inner-disconnect").style.display = "block"
             }
         }
 
-        tonConnectUI.connectionRestored.then(restored => {
+        tonConnectUI.connectionRestored.then(async(restored) => {
             if (restored) {
                 for (const nav of document.querySelectorAll(".navbar a")){
                     nav.style.display = "block"
                 }
                 document.querySelector(".inner-connect").style.display = "none"
-                let str = new Address(tonConnectUI.walletInfo.account.address).toString(true, true, true, true)
-                let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
-                document.querySelector("#address").textContent = result
+                let result = "Your balance: " + (await tonweb.getBalance(tonConnectUI.wallet.account.address) / 1000000000).toFixed(2)  + "TON"
+                document.querySelector(".balance").textContent = result
                 document.querySelector(".inner-disconnect").style.display = "block"
             } else {
                 for (const nav of document.querySelectorAll(".navbar a")){

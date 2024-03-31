@@ -45,7 +45,7 @@
                     <span onclick="plus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">+</span>
                 </div>
                 <div class="result_sum" style="margin: 0 auto; font-weight: 700; font-size: 28px; margin-bottom: 20px;">TOTAL: <span>0,5</span> ТОН</div>
-                <div class="address" style="font-size: 20px; text-align: center; margin-bottom: 10px;"></div>
+                <div class="balance" style="font-size: 20px; text-align: center; margin-bottom: 10px;"></div>
                 <button type="button" onclick="sendTx()" style="margin: 0 auto; width: 80%; background-color: inherit; border: none;">
                     <img style="width: 100%;" src="{% static 'img/mint.svg' %}" alt="">
                 </button>
@@ -112,19 +112,18 @@
             }
         }
 
-        function setAddress(address) {
+        async function setBalance(address) {
             if (!tonConnectUI.connected) {
                 window.location.pathname = "/";
                 return;
             }
-            let str = new Address(address).toString(true, true, true, true)
-            let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
-            document.querySelector(".address").textContent = result
+            let result = "Your balance: " + (await tonweb.getBalance(address) / 1000000000).toFixed(2) + "TON"
+            document.querySelector(".balance").textContent = result
         }
 
         const unsubscribe = tonConnectUI.onStatusChange(
             walletAndwalletInfo => {
-                setAddress(walletAndwalletInfo.account.address)
+                setBalance(walletAndwalletInfo.account.address)
             } 
         );
 
