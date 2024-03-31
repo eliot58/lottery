@@ -171,4 +171,4 @@ cython_debug/
 #.idea/
 json_v2.xlsx
 metadata/
-/.vscode
+.vscode

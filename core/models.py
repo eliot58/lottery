@@ -3,6 +3,7 @@ from django.db import models
 class Wallet(models.Model):
     address = models.CharField(max_length = 300)
     prize = models.FloatField(null = True, blank = True)
+    winner = models.CharField(max_length = 500, null = True, blank = True)
 
     class Meta:
         verbose_name = 'Кошелек'

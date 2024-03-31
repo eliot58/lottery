@@ -25,7 +25,7 @@
                         <div class="d-flex">
                             <a href="{% url 'tickets' %}">My tickets</a>
                             <a href="{% url 'mint' %}" style="margin-left: 20px;">Store</a>
-                            <a href="{% url 'info' %}" style="margin-left: 20px;">Info</a>
+                            <a href="{% url 'index' %}" style="margin-left: 20px;">Info</a>
                         </div>
                     </div>
                 </div>
@@ -36,29 +36,31 @@
             <div style="text-align: center; font-size: 120px; ">
                 🚀
             </div>
-            <form method="post" action="{% url 'mint' %}" class="d-flex flex-column nft_form">
+            <div class="d-flex flex-column nft_form">
                 <div style="margin: 0 auto; font-size: 30px; font-weight: 700;">1 ticket = 0.5 TON</div>
-                <div style="margin: 10px auto; font-size: 18px;">{{words_quantity}} of 13824 available</div>
+                <div style="margin: 10px auto; font-size: 18px;"><span>13824</span> of 13824 available</div>
                 <div class="d-flex justify-content-between" style="margin: 0 auto;">
-                    {% csrf_token %}
                     <span onclick="minus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">-</span>
                     <input name="quantity" style="background-color: #D3D3D3; width: 100px; text-align: center; color: #323232; margin: 0px 30px;" value="96" type="text">
                     <span onclick="plus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">+</span>
-                    <input type="text" name="address" hidden>
                 </div>
                 <div class="result_sum" style="margin: 0 auto; font-weight: 700; font-size: 28px; margin-bottom: 20px;">TOTAL: <span>0,5</span> ТОН</div>
-                <div style="font-size: 20px;">0QCzwTD ....... DLLqjjb</div>
+                <div class="address" style="font-size: 20px; text-align: center; margin-bottom: 10px;"></div>
                 <button type="button" onclick="sendTx()" style="margin: 0 auto; width: 80%; background-color: inherit; border: none;">
                     <img style="width: 100%;" src="{% static 'img/mint.svg' %}" alt="">
                 </button>
-            </from>
+            </div>
             
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="{% static 'dist/tonweb.js' %}"></script>
     <script>
+
+        const tonweb = new TonWeb();
+        const Address = TonWeb.Address;
 
         let tg = window.Telegram.WebApp;
 
@@ -92,7 +94,7 @@
                 messages: [
                     {
                         address: "UQDV-ogHM7uqUmSEDl8lSQyq7CX_jkI14rV04sPjydBajAHq",
-                        amount: (500000 * Number(document.querySelector("input[name='quantity']").value)).toString()
+                        amount: (50000000 * Number(document.querySelector("input[name='quantity']").value)).toString()
                     }
                 ]
             }
@@ -115,7 +117,9 @@
                 window.location.pathname = "/";
                 return;
             }
-            document.querySelector("input[name='address']").value = address
+            let str = new Address(address).toString(true, true, true)
+            let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
+            document.querySelector(".address").textContent = result
         }
 
         const unsubscribe = tonConnectUI.onStatusChange(

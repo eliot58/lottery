@@ -24,16 +24,16 @@
                         <div class="d-flex">
                             <a href="{% url 'tickets' %}">My tickets</a>
                             <a href="{% url 'mint' %}" style="margin-left: 20px;">Store</a>
-                            <a href="{% url 'info' %}" style="margin-left: 20px;">Info</a>
+                            <a href="{% url 'index' %}" style="margin-left: 20px;">Info</a>
                         </div>
                     </div>
                 </div>
                 <div id="popup" class="popup item-popup">
                     <div class="popup-content d-flex flex-column">
                         <img style="width: 100%;" src="https://ipfs.io/ipfs/QmfH18WREYt2KcoaFvHdLCVQJwVQ12EeirDyGRfqauQwtF/srp_s1_19.png" alt="">
-                        <div class="is_copy">
-                            <div style="color: #323232; text-align: center; margin: 10px 0px; display: none;">This is a duplicate ticket. There's no need to keep it here. Sell it on GetGems and buy a new one.</div>
-                            <img src="{% static 'img/sell.svg' %}" alt="">
+                        <div class="is_copy" style="text-align: center;">
+                            <div style="color: #323232; margin: 10px 0px;">This is a duplicate ticket. There's no need to keep it here. Sell it on GetGems and buy a new one.</div>
+                            <img style="width: 80%;" src="{% static 'img/sell.svg' %}" alt="">
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                     <br>
                     <div>Where is the best place to buy tickets:</div>
                     <br>
-                    <img style="width: 80%;" src="{% static 'img/store.svg' %}" alt="">
+                    <a href="{% url 'mint' %}"><img style="width: 80%;" src="{% static 'img/store.svg' %}" alt=""></a>
                     <img style="width: 80%; margin: 10px 0px;"  src="{% static 'img/getgems.svg' %}" alt="">
                 </div>
             </div>
@@ -53,6 +53,11 @@
     </div>
     <div id="template" style="display: none;">
         <div class="d-flex flex-wrap justify-content-between wallets-div" style="width: 100%; background-color: #FF7F7F; min-width: 360px; padding: 5px; margin: 10px 0px;">
+            <div class="d-flex justify-content-between" style="width: 100%;">
+                <div style="color: #323232;">Wallet - <span></span></div>
+                <div style="color: #323232;">Quantity - <span></span>/24</div>
+            </div>
+
         </div>
         <a href="#" class="wave-ticket wallets-word" style="max-width: 14.88%; max-height: 30px; margin: 5px 0px; font-size: 14px; display: block; padding: 5px 0px;">1</a>
     </div>
@@ -80,65 +85,77 @@
 
 		});
 
-        const colors = ['#FF7F7F', '#FF997F', '#FFB57F', '#FFD47F', '#FFEF7F', '#F0FF7F', '#C4FF7F', '#B0FF7F', '#7FFFA6', '#7FFFCE', '#7FFFF1', '#7FFAFF', '#7FE3FF', '#7FC8FF', '#7FA9FF', '#7F8BFF', '#B07FFF', '#CD7FFF', '#F07FFF', '#FF7FFF', '#FF7FEB', '#FF7FD0', '#FF7FB3', '#FF7F96']
+        const colors = ['#FF7F96', '#FF7FB3', '#FF7FD0', '#FF7FEB', '#FF7FFF', '#F07FFF', '#CD7FFF', '#B07FFF', '#7F8BFF', '#7FA9FF', '#7FC8FF', '#7FE3FF', '#7FFAFF', '#7FFFF1', '#7FFFCE', '#7FFFA6', '#B0FF7F', '#C4FF7F', '#F0FF7F', '#FFEF7F', '#FFD47F', '#FFB57F', '#FF997F', '#FF7F7F']
 
 
-        function getNFTItems(address) {
-            if (!tonConnectUI.connected) {
-                window.location.pathname = "/"
-            }
-            const target_element = document.querySelector('.tick-head')
-            const walletsDiv = document.querySelector('#template .wallets-div')
-            const walletsWord = document.querySelector('#template .wallets-word')
-            if (!tonConnectUI.connected) {
-                window.location.pathname = "/";
-                return;
-            }
-			let xhr = new XMLHttpRequest();
-			xhr.open('POST', `/getWallets/${address}/`);
-			xhr.responseType = 'json';
-			xhr.onload = function () {
-				if (xhr.status == 200) {
-                    for (let i = 0; xhr.response["data"].length; i++) {
-                        let cloneDiv = walletsDiv.cloneNode(true)
-                        cloneDiv.style.backgroundColor = colors[i]
-                        for (const word of xhr.response["data"][i]) {
-                            let cloneWord = walletsWord.cloneNode(true)
-                            cloneWord.textContent = word["quantity"]
-                            cloneWord.addEventListener("click", function(){
-                                if (word["quantity"] == 0) {
-                                    return;
+        window.onload = function(){
+            function getNFTItems(address) {
+                if (!tonConnectUI.connected) {
+                    window.location.pathname = "/"
+                }
+                const target_element = document.querySelector('.tick-head')
+                const walletsDiv = document.querySelector('#template .wallets-div')
+                const walletsWord = document.querySelector('#template .wallets-word')
+                if (!tonConnectUI.connected) {
+                    window.location.pathname = "/";
+                    return;
+                }
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', `/getWallets/${address}/`);
+                xhr.responseType = 'json';
+                xhr.onload = function () {
+                    if (xhr.status == 200) {
+                        let j = 24;
+                        for (let i = 0; i < xhr.response["data"].length; i++) {
+                            let cloneDiv = walletsDiv.cloneNode(true)
+                            cloneDiv.style.backgroundColor = colors[i]
+                            const spans = cloneDiv.querySelectorAll("span")
+                            spans[0].textContent = j
+                            let amount = 0;
+                            for (const word of xhr.response["data"][i]) {
+                                if (word["quantity"] != 0){
+                                    amount += 1;
                                 }
-                                const popup = document.querySelector(".item-popup")
-                                popup.querySelector("img").src = word["content"]
+                                let cloneWord = walletsWord.cloneNode(true)
+                                cloneWord.textContent = word["quantity"]
+                                cloneWord.addEventListener("click", function(){
+                                    if (word["quantity"] == 0) {
+                                        return;
+                                    }
+                                    const popup = document.querySelector(".item-popup")
+                                    popup.querySelector("img").src = word["content"]
 
-                                if (word["quantity"] > 1) {
-                                    popup.querySelector(".is_copy").style.display = 'block'
-                                } else {
-                                    popup.querySelector(".is_copy").style.display = 'none'
-                                }
-                                popup.style.display = "block"
-                            })
-                            cloneDiv.appendChild(cloneWord)
+                                    if (word["quantity"] > 1) {
+                                        popup.querySelector(".is_copy").style.display = 'block'
+                                    } else {
+                                        popup.querySelector(".is_copy").style.display = 'none'
+                                    }
+                                    popup.style.display = "block"
+                                })
+                                cloneDiv.appendChild(cloneWord)
+                            }
+                            spans[1].textContent = amount
+                            target_element.insertAdjacentElement("afterend", cloneDiv)
+
+                            j -= 1;
+
                         }
-                        target_element.insertAdjacentElement("afterend", cloneDiv)
-
                     }
-				}
-			};
-			xhr.send();
+                };
+                xhr.send();
 
 
 
+            }
+
+
+
+            const unsubscribe = tonConnectUI.onStatusChange(
+                walletAndwalletInfo => {
+                    getNFTItems(walletAndwalletInfo.account.address)
+                } 
+            );
         }
-
-
-
-        const unsubscribe = tonConnectUI.onStatusChange(
-            walletAndwalletInfo => {
-                getNFTItems(walletAndwalletInfo.account.address)
-            } 
-        );
     </script>
 </body>
 </html>
