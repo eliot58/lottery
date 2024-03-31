@@ -117,7 +117,7 @@
                 window.location.pathname = "/";
                 return;
             }
-            let result = "Your balance: " + (await tonweb.getBalance(address) / 1000000000).toFixed(2) + "TON"
+            let result = "Your balance: " + (await tonweb.getBalance(address) / 1000000000).toFixed(2) + " TON"
             document.querySelector(".balance").textContent = result
         }
 
