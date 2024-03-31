@@ -45,13 +45,13 @@
                     <a href="{% url 'tables' %}">Wave distribution table.</a> <br>
                 </div>
             </div>
-            <a href="#" class="continue" id="connect" style="text-align: center;">
-                <img style="width: 80%;" src="{% static 'img/continue.svg' %}" alt="">
-            </a>
+            <div style="text-align: center;">
+                <img style="width: 80%; cursor: pointer;" id="connect"  src="{% static 'img/continue.svg' %}" alt="">
+            </div>
             <div class="inner-disconnect" style="text-align: center; display: none;">
                 <div style="font-size: 18px;">Now connected:</div>
                 <div class="address" id="address" style="font-size: 20px; margin-bottom: 10px;"></div>
-                <img class="disconnect" style="width: 80%;" src="{% static 'img/disconnect.svg' %}" alt="">
+                <img class="disconnect" style="width: 80%; cursor: pointer;" src="{% static 'img/disconnect.svg' %}" alt="">
             </div>
         </div>
     </div>
