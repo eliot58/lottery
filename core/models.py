@@ -15,7 +15,7 @@ class Wallet(models.Model):
 class Word(models.Model):
     name = models.CharField(max_length = 20)
     stage = models.PositiveIntegerField()
-    index = models.PositiveIntegerField(null = True, blank = True)
+    index = models.PositiveIntegerField(null = True, blank = True, unique = True)
     wallet = models.ForeignKey(Wallet, on_delete = models.CASCADE)
 
     class Meta:

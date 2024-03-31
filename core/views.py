@@ -1,5 +1,7 @@
 import json
+import random
 from django.shortcuts import render, redirect
+import openpyxl
 from .models import Wallet, Word
 from random import randint
 import asyncio
@@ -165,3 +167,23 @@ def getWallets(_, address):
         new_result.append(a)
     
     return JsonResponse({"data": new_result})
+
+
+def setindex(request):
+
+    # wb = openpyxl.load_workbook('json.xlsx', data_only=True)
+
+    # sheet = wb.active
+
+    
+    # for i in range(1, 13825):
+    #     words = Word.objects.filter(wallet_id = sheet[f"C{i}"].value) & Word.objects.filter(stage = sheet[f"E{i}"].value) & Word.objects.filter(index = None)
+    #     word = words.first()
+    #     if word:
+    #         word.index = int(sheet[f"F{i}"].value) - 1
+    #         word.save()
+
+    print(len(Word.objects.filter(index = None)))
+
+
+    return JsonResponse({"success": True})
