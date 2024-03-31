@@ -98,7 +98,7 @@
                     nav.style.display = "block"
                 }
                 document.querySelector(".inner-connect").style.display = "none"
-                let str = new Address(address).toString(true, true, true)
+                let str = new Address(address).toString(true, true, true, true)
                 let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
                 document.querySelector("#address").textContent = result
                 document.querySelector(".inner-disconnect").style.display = "block"
@@ -111,7 +111,7 @@
                     nav.style.display = "block"
                 }
                 document.querySelector(".inner-connect").style.display = "none"
-                let str = new Address(tonConnectUI.walletInfo.account.address).toString(true, true, true)
+                let str = new Address(tonConnectUI.walletInfo.account.address).toString(true, true, true, true)
                 let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
                 document.querySelector("#address").textContent = result
                 document.querySelector(".inner-disconnect").style.display = "block"

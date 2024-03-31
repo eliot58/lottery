@@ -117,7 +117,7 @@
                 window.location.pathname = "/";
                 return;
             }
-            let str = new Address(address).toString(true, true, true)
+            let str = new Address(address).toString(true, true, true, true)
             let result = str.slice(0, 10) + " . . . . . . . . . " + str.slice(str.length - 10);
             document.querySelector(".address").textContent = result
         }
