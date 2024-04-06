@@ -14,4 +14,4 @@ class WalletAdmin(admin.ModelAdmin):
 
 @admin.register(Word)
 class WordAdmin(admin.ModelAdmin):
-    list_display = ['name', 'stage', 'index', 'wallet']
+    list_display = ['name', 'index', 'wallet']

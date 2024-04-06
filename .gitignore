@@ -7,6 +7,8 @@ upload.py
 example.py
 db.sqlite3
 metadata.json
+create.py
+json.xlsx
 collection.json
 collection.gif
 # Byte-compiled / optimized / DLL files
