@@ -17,6 +17,7 @@ class Word(models.Model):
     name = models.CharField(max_length = 20)
     index = models.PositiveIntegerField(null = True, blank = True, unique = True)
     wallet = models.ForeignKey(Wallet, on_delete = models.CASCADE)
+    no = models.PositiveIntegerField()
 
     class Meta:
         verbose_name = 'Слово'

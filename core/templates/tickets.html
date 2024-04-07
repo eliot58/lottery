@@ -38,6 +38,9 @@
                     </div>
                 </div>
                 <div style="margin: 0 auto; font-size: 24px; font-weight: 700;" class="tick-head">Tickets</div>
+                <div class="d-flex flex-column target">
+
+                </div>
                 <div style="text-align: center;">
                     <div>Now you need to make a decision. <br> What to do next.</div>
                     <div>It makes more sense to sell unnecessary tickets on the secondary market and purchase the next set of tickets on the same marketplace or here with us. Try not to purchase previously purchased tickets. Write down their numbers.</div>
@@ -58,6 +61,27 @@
                 <div style="color: #323232;">Quantity - <span></span>/24</div>
             </div>
 
+        </div>
+        <div class="winner-div" style="margin: 10px 0px; padding: 5px; width: 100%; min-width: 360px; position: relative;">
+            <img src="{% static 'img/ticket.png' %}" style="width: 100%; height: 100%;" alt="">
+            <div class="d-flex flex-column" style="position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%); text-align: center; padding: 40px 0px;">
+                <div style="color: #323232; font-weight: 600; font-size: 20px;">🎉 Congratulations! 🎉</div>
+                <div style="color: #323232;">
+                    Do you have a secret phrase <br> to access <span>128.64</span> TON
+                </div>
+                <div style="color: #323232;">
+                    For security reasons we will not show it. <br> Tap will copy the phrase to the clipboard.
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column lose-div">
+            <div>😔</div>
+            <div>
+                The owner of the address gained access:
+            </div>
+            <div>
+                UQAATB2N.............O2ZDWlTd
+            </div>
         </div>
         <a href="#" class="wave-ticket wallets-word" style="max-width: 14.88%; max-height: 30px; margin: 5px 0px; font-size: 14px; display: block; padding: 5px 0px;">1</a>
     </div>
@@ -85,7 +109,7 @@
 
 		});
 
-        const colors = ['#FF7F96', '#FF7FB3', '#FF7FD0', '#FF7FEB', '#FF7FFF', '#F07FFF', '#CD7FFF', '#B07FFF', '#7F8BFF', '#7FA9FF', '#7FC8FF', '#7FE3FF', '#7FFAFF', '#7FFFF1', '#7FFFCE', '#7FFFA6', '#B0FF7F', '#C4FF7F', '#F0FF7F', '#FFEF7F', '#FFD47F', '#FFB57F', '#FF997F', '#FF7F7F']
+        const colors = ['#FF7F7F', '#FF997F', '#FFB57F', '#FFD47F', '#FFEF7F', '#F0FF7F', '#C4FF7F', '#B0FF7F', '#7FFFA6', '#7FFFCE', '#7FFFF1', '#7FFAFF', '#7FE3FF', '#7FC8FF', '#7FA9FF', '#7F8BFF', '#B07FFF', '#CD7FFF', '#F07FFF', '#FF7FFF', '#FF7FEB', '#FF7FD0', '#FF7FB3', '#FF7F96']
 
 
         window.onload = function(){
@@ -93,9 +117,11 @@
                 if (!tonConnectUI.connected) {
                     window.location.pathname = "/"
                 }
-                const target_element = document.querySelector('.tick-head')
+                const target_element = document.querySelector('.target')
                 const walletsDiv = document.querySelector('#template .wallets-div')
                 const walletsWord = document.querySelector('#template .wallets-word')
+                const winner = document.querySelector('#template .winner-div')
+                const lose = document.querySelector('#template .lose-div')
                 if (!tonConnectUI.connected) {
                     window.location.pathname = "/";
                     return;
@@ -105,41 +131,49 @@
                 xhr.responseType = 'json';
                 xhr.onload = function () {
                     if (xhr.status == 200) {
-                        let j = 24;
-                        for (let i = 0; i < xhr.response["data"].length; i++) {
-                            let cloneDiv = walletsDiv.cloneNode(true)
-                            cloneDiv.style.backgroundColor = colors[i]
-                            const spans = cloneDiv.querySelectorAll("span")
-                            spans[0].textContent = j
-                            let amount = 0;
-                            for (const word of xhr.response["data"][i]) {
-                                if (word["quantity"] != 0){
-                                    amount += 1;
+                        for (let i = 1; i < 25; i++) {
+                            if (xhr.response["data"][i]["seed"] != undefined) {
+                                let cloneDiv = winner.cloneNode(true)
+                                cloneDiv.style.backgroundColor = colors[i-1]
+                                cloneDiv.style.height = "194px"
+                                cloneDiv.querySelector("span").textContent = xhr.response["data"][i]["prize"]
+                                target_element.insertAdjacentElement("beforeend", cloneDiv)
+                            } else if (xhr.response["data"][i] == null) {
+                                let cloneDiv = lose.cloneNode(true)
+                                cloneDiv.style.backgroundColor = colors[i-1]
+                                target_element.insertAdjacentElement("beforeend", cloneDiv)
+                            } else {
+                                let cloneDiv = walletsDiv.cloneNode(true)
+                                cloneDiv.style.backgroundColor = colors[i-1]
+                                const spans = cloneDiv.querySelectorAll("span")
+                                spans[0].textContent = i
+                                let amount = 0;
+                                for (let j = 1; j < 25; j++) {
+                                    if (xhr.response["data"][i][j]["quantity"] != 0) {
+                                        amount += 1
+                                    }
+                                    let cloneWord = walletsWord.cloneNode(true)
+                                    cloneWord.textContent = xhr.response["data"][i][j]["quantity"]
+                                    cloneWord.addEventListener("click", function(event){
+                                        if (xhr.response["data"][i][j]["quantity"] == 0) {
+                                            return;
+                                        }
+                                        const popup = document.querySelector(".item-popup")
+                                        popup.querySelector("img").src = xhr.response["data"][i][j]["content"]
+
+                                        if (xhr.response["data"][i][j]["quantity"] > 1) {
+                                            popup.querySelector(".is_copy").style.display = 'block'
+                                        } else {
+                                            popup.querySelector(".is_copy").style.display = 'none'
+                                        }
+                                        event.preventDefault();
+                                        popup.style.display = "block"
+                                    })
+                                    cloneDiv.appendChild(cloneWord)
                                 }
-                                let cloneWord = walletsWord.cloneNode(true)
-                                cloneWord.textContent = word["quantity"]
-                                cloneWord.addEventListener("click", function(event){
-                                    if (word["quantity"] == 0) {
-                                        return;
-                                    }
-                                    const popup = document.querySelector(".item-popup")
-                                    popup.querySelector("img").src = word["content"]
-
-                                    if (word["quantity"] > 1) {
-                                        popup.querySelector(".is_copy").style.display = 'block'
-                                    } else {
-                                        popup.querySelector(".is_copy").style.display = 'none'
-                                    }
-                                    event.preventDefault();
-                                    popup.style.display = "block"
-                                })
-                                cloneDiv.appendChild(cloneWord)
+                                spans[1].textContent = amount
+                                target_element.insertAdjacentElement("beforeend", cloneDiv)
                             }
-                            spans[1].textContent = amount
-                            target_element.insertAdjacentElement("afterend", cloneDiv)
-
-                            j -= 1;
-
                         }
                     }
                 };
