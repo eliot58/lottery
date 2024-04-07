@@ -52,7 +52,6 @@ def getWallets(_, address):
 
     users_nft_info = {nft["index"]: {"content": nft["metadata"]["content_url"], "address": nft["address"]} for nft in nfts}
 
-    sum_of_tickets = 0
 
     for wallet in Wallet.objects.all().order_by("id"):
         results[wallet.id] = {}
@@ -70,8 +69,6 @@ def getWallets(_, address):
                 results[wallet.id][word[0]] = {}
                 results[wallet.id][word[0]]["quantity"] = 0
 
-
-        sum_of_tickets += k
 
         if k == 24:
             if wallet.winner == None:
@@ -95,4 +92,4 @@ def getWallets(_, address):
             else:
                 results[wallet.id] = {"address": wallet.winner[:10:] + "............" + wallet.winner[-10::]}
 
-    return JsonResponse({"data": results, "pieces": sum_of_tickets})
+    return JsonResponse({"data": results, "pieces": len(user_index)})
