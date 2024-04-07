@@ -11,6 +11,7 @@ create.py
 json.xlsx
 collection.json
 collection.gif
+metadata.zip
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

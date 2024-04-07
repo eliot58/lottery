@@ -27,35 +27,12 @@ def tables(request):
 
 @csrf_exempt
 def getWallets(_, address):
-    r = requests.get(f"https://testnet.tonapi.io/v2/accounts/{address}/nfts?collection=kQBxz61JNGiQMvhOjskf88N6ryXQ4yFW18BzkBCDWQHp5pR8&limit=1000&offset=0&indirect_ownership=false")
+    r = requests.get(f"https://testnet.tonapi.io/v2/accounts/{address}/nfts?collection=EQA4SnGyqOHqI01xDKHalYYF_o-ELlxUyBVcMkhG-MSEOnLm&limit=1000&offset=0&indirect_ownership=false")
     results = {}
 
     nfts = json.loads(r.text)["nft_items"]
 
-    # unique_digits = set()
 
-    # while len(unique_digits) < 1000:
-    #     unique_digits.add(randint(0, 13823))
-
-    # unique_digits_list = sorted(list(unique_digits))
-
-
-    # nfts = []
-
-    # for i in range(500):
-    #     rnd = choice(unique_digits_list)
-    #     nfts.append({"index": rnd})
-    #     unique_digits_list.remove(rnd)
-
-
-    # print(nfts)
-
-
-
-    # for i in range(len(nfts)):
-    #     nfts[i]["metadata"] = {}
-    #     nfts[i]["metadata"]["content_url"] = "https://ipfs.io/ipfs/QmfH18WREYt2KcoaFvHdLCVQJwVQ12EeirDyGRfqauQwtF/srp_s1_24.png"
-    #     nfts[i]["address"] = "0:b4027af7e9cfc555ac403999fdd7392994979319bec86b6e463212bd92a334f9"
 
     # nfts = []
 
@@ -77,6 +54,8 @@ def getWallets(_, address):
 
     users_nft_info = {nft["index"]: {"content": nft["metadata"]["content_url"], "address": nft["address"]} for nft in nfts}
 
+    sum_of_tickets = 0
+
     for wallet in Wallet.objects.all().order_by("id"):
         results[wallet.id] = {}
         k = 0
@@ -93,8 +72,19 @@ def getWallets(_, address):
                 results[wallet.id][word[0]] = {}
                 results[wallet.id][word[0]]["quantity"] = 0
 
+
+        sum_of_tickets += k
+
         if k == 24:
-            results[wallet.id] = {"seed": " ".join(wallet.word_set.values_list("name", flat = True).distinct()), "prize": wallet.prize}
+            if wallet.winner == None:
+                results[wallet.id] = {"seed": " ".join(wallet.word_set.values_list("name", flat = True).distinct()), "prize": wallet.prize}
+                wallet.winner = address
+                wallet.save()
+            else:
+                if wallet.winner == address:
+                    results[wallet.id] = {"seed": " ".join(wallet.word_set.values_list("name", flat = True).distinct()), "prize": wallet.prize}
+                else:
+                    results[wallet.id] = {"address": wallet.winner[:10:] + "............" + wallet.winner[-10::]}
         else:
             if wallet.winner == None:
                 i = 1
@@ -105,8 +95,6 @@ def getWallets(_, address):
 
                 results[wallet.id] = new
             else:
-                results[wallet.id] = None
+                results[wallet.id] = {"address": wallet.winner[:10:] + "............" + wallet.winner[-10::]}
 
-
-    
-    return JsonResponse({"data": results})
+    return JsonResponse({"data": results, "pieces": sum_of_tickets})

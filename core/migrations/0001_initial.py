@@ -10,9 +10,13 @@ def create_default_rows(apps, schema_editor):
         wallets = json.load(f)
     Wallet = apps.get_model('core', 'Wallet')
     Word = apps.get_model('core', 'Word')
+    prizes = [35, 41, 47, 53, 59, 65, 71, 77, 83, 89, 95, 101, 107, 113, 119, 125, 131, 137, 143, 149, 155, 161, 167, 177]
+    p = 0
     for address, words in wallets.items():
 
-        wallet = Wallet.objects.create(address = address)
+        wallet = Wallet.objects.create(address = address, prize = prizes[p])
+
+        p+=1
 
         for i in range(len(words)):
             for _ in range(24):

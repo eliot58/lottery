@@ -38,10 +38,10 @@
             </div>
             <div class="d-flex flex-column nft_form">
                 <div style="margin: 0 auto; font-size: 30px; font-weight: 700;">1 ticket = 0.5 TON</div>
-                <div style="margin: 10px auto; font-size: 18px;"><span>13824</span> of 13824 available</div>
+                <!-- <div style="margin: 10px auto; font-size: 18px;"><span>13824</span> of 13824 available</div> -->
                 <div class="d-flex justify-content-between" style="margin: 0 auto;">
                     <span onclick="minus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">-</span>
-                    <input name="quantity" style="background-color: #D3D3D3; width: 100px; text-align: center; color: #323232; margin: 0px 30px;" value="96" type="text">
+                    <input name="quantity" disabled style="background-color: #D3D3D3; width: 100px; text-align: center; color: #323232; margin: 0px 30px;" value="24" type="text">
                     <span onclick="plus(this)" style="background-color: #D3D3D3; padding: 10px 25px; color: #323232; font-size: 28px; cursor: pointer;">+</span>
                 </div>
                 <div class="result_sum" style="margin: 0 auto; font-weight: 700; font-size: 28px; margin-bottom: 20px;">TOTAL: <span>0,5</span> ТОН</div>
@@ -76,7 +76,7 @@
 		
 		function plus(element){
 			i = element.previousElementSibling;
-			if (i.value != 120){
+			if (i.value != 24){
 				i.value = Number(i.value) + 1
 			}
             document.querySelector(".result_sum span").textContent = Number(i.value) * 0.5
@@ -93,9 +93,9 @@
                 validUntil: Math.floor(Date.now() / 1000) + 60,
                 messages: [
                     {
-                        address: "UQDV-ogHM7uqUmSEDl8lSQyq7CX_jkI14rV04sPjydBajAHq",
+                        address: "EQDdhR1nAUpdfVRPEQMVmNKWoyqOMHlynDqDI3h180OFdTAW",
                         amount: (50000000 * Number(document.querySelector("input[name='quantity']").value)).toString(),
-                        payload: "te6cckEBAQEACgAAEAAAAABtaW50X5lN6g=="
+                        payload: "te6cckEBAQEADgAAGAAAAAEAAAAAAAAAADypAxg="
                     }
                 ]
             }
