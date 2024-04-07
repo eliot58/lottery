@@ -1,11 +1,9 @@
 import json
 from django.shortcuts import render
-import openpyxl
-from .models import Wallet, Word
+from .models import Wallet
 import requests
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from random import randint, choice
 
 
 
@@ -27,7 +25,7 @@ def tables(request):
 
 @csrf_exempt
 def getWallets(_, address):
-    r = requests.get(f"https://testnet.tonapi.io/v2/accounts/{address}/nfts?collection=EQA4SnGyqOHqI01xDKHalYYF_o-ELlxUyBVcMkhG-MSEOnLm&limit=1000&offset=0&indirect_ownership=false")
+    r = requests.get(f"https://tonapi.io/v2/accounts/{address}/nfts?collection=EQA4SnGyqOHqI01xDKHalYYF_o-ELlxUyBVcMkhG-MSEOnLm&limit=1000&offset=0&indirect_ownership=false")
     results = {}
 
     nfts = json.loads(r.text)["nft_items"]
