@@ -1,27 +1,9 @@
 import json
-from django.shortcuts import render
 from .models import Wallet
 import requests
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
-
-
-def index(request):
-    return render(request, "wallet.html")
-
-
-def mint(request):
-    return render(request, "buy.html")
-
-
-def tickets(request):
-    return render(request, "tickets.html")
-
-
-def tables(request):
-    wallets = Wallet.objects.all().order_by("id")
-    return render(request, "tables.html", {"first_part": wallets[:12], "second_part": wallets[12::]})
 
 @csrf_exempt
 def getWallets(_, address):
@@ -29,24 +11,6 @@ def getWallets(_, address):
     results = {}
 
     nfts = json.loads(r.text)["nft_items"]
-
-
-
-    # nfts = []
-
-    # wb = openpyxl.load_workbook('json.xlsx', data_only=True)
-
-    # sheet = wb["json v2"]
-    # for i in range(1, 3001):
-    #     nfts.append({"index": int(sheet[f"K{i}"].value) - 1})
-
-
-    # for i in range(len(nfts)):
-    #     nfts[i]["metadata"] = {}
-    #     nfts[i]["metadata"]["content_url"] = "https://ipfs.io/ipfs/QmfH18WREYt2KcoaFvHdLCVQJwVQ12EeirDyGRfqauQwtF/srp_s1_24.png"
-    #     nfts[i]["address"] = "0:b4027af7e9cfc555ac403999fdd7392994979319bec86b6e463212bd92a334f9"
-
-
 
     user_index = [nft["index"] for nft in nfts]
 
